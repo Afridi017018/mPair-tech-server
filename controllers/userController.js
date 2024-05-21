@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { connection } = require("../config/db.config");
+const { jwt_secret } = require("../src/secret");
 
 const userRegister = async (req, res) => {
 
@@ -9,12 +10,14 @@ const userRegister = async (req, res) => {
         const { name, eid, email, position, gender, password } = req.body;
 
         await connection.promise().query("INSERT INTO users (name,eid,email,position,gender,password) VALUES (? , ? , ? , ?, ?, ?);", [name, eid, email, position, gender, password])
-        res.json({ "message": "Registered Successfully !!!" })
+        res.json(
+            { message: "Registered Successfully !!!" }
+        )
 
     } catch (err) {
-        res.json({
-            message: err.message
-        })
+        res.json(
+            { message: err.message }
+        )
     }
 
 
@@ -24,7 +27,6 @@ const userRegister = async (req, res) => {
 const userLogin = async (req, res) => {
     try {
         const { eid, password } = req.body;
-
 
         const [rows] = await connection.promise().query("SELECT * FROM users WHERE eid = ?", [eid]);
 
@@ -39,11 +41,11 @@ const userLogin = async (req, res) => {
             return res.status(401).json({ message: "Incorrect password." });
         }
 
-        const token = jwt.sign({ id: user.id, eid: user.eid }, "process.env.JWT_SECRET", {
+        const token = jwt.sign({ id: user.id, eid: user.eid }, jwt_secret, {
             expiresIn: '1h'
         });
 
-        res.json({ token });
+        res.json({ token, message: "Login Successful !" });
 
     } catch (err) {
         console.error("Login error:", err);
@@ -57,9 +59,9 @@ const userInfo = async (req, res) => {
     const [rows] = await connection.promise().query("SELECT id, name, eid, email, position, gender FROM users WHERE eid = ?", [req.eid]);
     const user = rows[0]
 
-    console.log(user)
-
-    res.send("hiiiiiiiiiiiiii")
+    res.json({
+        user,
+    })
 }
 
 module.exports = {

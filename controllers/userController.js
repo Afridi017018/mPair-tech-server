@@ -60,6 +60,7 @@ const userInfo = async (req, res) => {
     const user = rows[0]
 
     res.json({
+        success: true,
         user,
     })
 }

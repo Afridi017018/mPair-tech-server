@@ -5,7 +5,6 @@ const usersTable = `CREATE TABLE IF NOT EXISTS users(
     email VARCHAR(1000) NOT NULL UNIQUE,
     position VARCHAR(1000) NOT NULL,
     gender VARCHAR(1000) NOT NULL,
-    dob VARCHAR(1000) NOT NULL,
     password VARCHAR(1000) NOT NULL,
     PRIMARY KEY(id)
    )
